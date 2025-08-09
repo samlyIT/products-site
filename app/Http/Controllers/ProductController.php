@@ -43,18 +43,38 @@ class ProductController extends Controller
     {
         return view('products.edit', compact('product'));
     }
+//     public function edit($id)
+// {
+//     $product = Product::findOrFail($id);
+//     return view('products.edit', compact('product'));
+// }
 
-    public function update(Request $request, Product $product)
-    {
-        $request->validate([
-            'title' => 'required',
-            'price' => 'required|numeric',
-            'qty' => 'required|integer',
-        ]);
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'price' => 'required|numeric',
+        'qty' => 'required|integer',
+    ]);
 
-        $product->update($request->all());
-        return redirect()->route('products.index');
-    }
+    $product = Product::findOrFail($id);
+    $product->update($request->only(['title', 'price', 'qty']));
+
+    return redirect()->route('products.index')->with('success', 'Product updated successfully.');
+}
+
+
+    // public function update(Request $request, Product $product)
+    // {
+    //     $request->validate([
+    //         'title' => 'required',
+    //         'price' => 'required|numeric',
+    //         'qty' => 'required|integer',
+    //     ]);
+
+    //     $product->update($request->all());
+    //     return redirect()->route('products.index');
+    // }
 
     public function destroy(Product $product)
     {
